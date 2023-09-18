@@ -63,7 +63,6 @@
     ansible.builtin.get_url:
       url : https://roboshop-builds.s3.amazonaws.com/catalogue.zip
       dest: /tmp 
-      #execute untill this again
   
   - name: extract catalogue artifact
     tags:
@@ -120,5 +119,5 @@
     ansible.builtin.service:
       name: catalogue
       state: restarted
-      enabled: yes
+      enabled: true
    
