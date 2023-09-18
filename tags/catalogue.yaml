@@ -111,7 +111,7 @@
   - name: load catalogue data #schema
     tags:
     - installation
-    ansible.builtin.shell: mongo --host 172.31.46.10 < /app/schema/catalogue.js #ip address given from mongodb-dev instance
+    ansible.builtin.shell: mongo --host mongodb.ops2ai.cloud < /app/schema/catalogue.js #ip address given from mongodb-dev instance
 
   - name: restart catalogue 
     tags:
