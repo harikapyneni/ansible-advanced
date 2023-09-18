@@ -1,0 +1,124 @@
+- name: catalogue component
+  hosts: catalogue
+  become: yes
+  tasks:
+  #tags - installation is do not run again and again while execution
+  #tags - deployement is have to run while execution coz it need to
+
+  - name : Setup NPM source #refere RoboShop-Documentation
+    tags: 
+    - installation        
+    ansible.builtin.shell: "curl -sL https://rpm.nodesource.com/setup_lts.x | bash" #execute until this part,yellow=loading
+  
+  - name: Install Nodejs
+    tags:
+    - installation
+    ansible.builtin.yum:
+      name: nodejs
+      state: installed
+
+  - name: check user exists or not
+    tags:
+    - installation
+    ansible.builtin.command: id roboshop
+    register: out #out is variable
+    ignore_errors: true # for ignore errors in the execution without exiting
+
+  - when: out.rc !=0 #condition with expression 
+    #out.rc !=0; !--> not equal to; 0 is success, 1 is failure;  
+    #out.rc-->rc=0 or rc=1. is like { (variable).(key)-->key:value pair } ie called (nested format)
+    #out(variable).rc(key)-->rc(key)=1or0(value), if rc=1 failure 
+    name: create user roboshop
+    tags:
+    - installation
+    become: yes
+    ansible.builtin.user:
+      name: roboshop
+
+  - name: check /app directory exists or not
+    tags:
+    - installation
+    ansible.builtin.stat: #checks the statistics
+      path: /app
+    register: directory #directory is variable
+
+    #print statistics of directory
+  - name: print directory stats
+    tags:
+    - installation
+    ansible.builtin.debug:
+      msg: "output is: {{directory}}"
+    
+  - when: directory.stat.exists == False #boolean ; False -not exists.(directory.stat.exists) is from error execution
+    name: create /app directory
+    tags:
+    - installation
+    ansible.builtin.file:
+      path: /app
+      state: directory
+
+  - name: download catalogue artifact
+    tags:
+    - deployment          
+    ansible.builtin.get_url:
+      url : https://roboshop-builds.s3.amazonaws.com/catalogue.zip
+      dest: /tmp 
+      #execute untill this again
+  
+  - name: extract catalogue artifact
+    tags:
+    - deployment
+    ansible.builtin.unarchive:
+      src: /tmp/catalogue.zip
+      dest: /app
+      remote_src: yes
+
+  - name: install dependencies
+    tags:
+    - deployment
+    ansible.builtin.command: npm install
+    args:
+      chdir: /app  #chdir-->change directory
+      #execute untill this to install
+
+  - name: copy catalogue service
+    tags:
+    - installation
+    ansible.builtin.copy:
+      src: catalogue.service
+      dest: /etc/systemd/system/catalogue.service
+
+    #load the service
+  - name: daemon reload
+    tags:
+    - installation
+    ansible.builtin.systemd:
+      daemon_reload: true
+
+  - name: copy mongo repo to yum.repos.d
+    tags:
+    - installation
+    ansible.builtin.copy:
+      src: mongodb.repo # file in mongodb 
+      dest: /etc/yum.repos.d/mongo.repo
+
+  - name: install mongodb client
+    tags:
+    - installation
+    ansible.builtin.yum:
+      name: mongodb-org-shell
+      state: installed
+
+  - name: load catalogue data #schema
+    tags:
+    - installation
+    ansible.builtin.shell: mongo --host 172.31.46.10 < /app/schema/catalogue.js #ip address given from mongodb-dev instance
+
+  - name: restart catalogue 
+    tags:
+    - deployment
+    ansible.builtin.service:
+      name: catalogue
+      state: restarted
+      enabled: yes
+   
