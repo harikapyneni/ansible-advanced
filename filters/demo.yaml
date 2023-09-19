@@ -2,15 +2,20 @@
   hosts: localhost
   vars:
     NAME: Harika
+    website: https://www.joindevops.com/batch-74s
   tasks:
   - name: convert into Upper Case
     debug:
-      msg: "{{ NAME | upper }}"
+      msg: "{{ NAME | upper }}" # filters module "{{ variable | filtertype }}"
 
   - name: convert into Upper Case
     debug:
       msg: "{{ NAME | lower }}"
 
-  - name: printing undefined variable
+  - name: printing undefined variable   
     debug:
-      msg: "{{ COURSE | default('DevOps') }}"
+      msg: "{{ COURSE | default('DevOps') }}"  # if user forgets to give variables in command line..so user has an option
+
+  - name: extract hostname #add variable website:url, we need only hostname--joindevops.com so we split
+    debug:
+      msg: "{{ website | urlsplit('hostname') }}"
