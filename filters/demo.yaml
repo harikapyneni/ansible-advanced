@@ -1,12 +1,13 @@
-- name: DEMO filters
+- name: DEMO filters # filters module "{{ variable | filtertype }}"
   hosts: localhost
   vars:
-    NAME: Harika
-    website: https://www.joindevops.com/batch-74s
+    NAME: Harika #Upper case,Lower case
+    website: https://www.joindevops.com/batch-74s #URL
+    Greeting: Hello Apple,how are you #String
   tasks:
   - name: convert into Upper Case
     debug:
-      msg: "{{ NAME | upper }}" # filters module "{{ variable | filtertype }}"
+      msg: "{{ NAME | upper }}" 
 
   - name: convert into Upper Case
     debug:
@@ -19,3 +20,8 @@
   - name: extract hostname #add variable website:url, we need only hostname--joindevops.com so we split
     debug:
       msg: "{{ website | urlsplit('hostname') }}"
+
+  - name: split string
+    debug:
+      #msg: "{{ Greeting | join (' ') }}" #joining List to String
+      msg: "{{ Greeting | split(',') }}" #splitting String into List 
