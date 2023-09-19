@@ -1,0 +1,8 @@
+- name: DEMO filters
+  hosts: localhost
+  vars:
+    NAME: Harika
+  tasks:
+  - name: convert into Upper Case
+    debug:
+      msg: "{{ NAME | upper }}"
