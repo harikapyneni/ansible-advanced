@@ -6,3 +6,11 @@
   - name: convert into Upper Case
     debug:
       msg: "{{ NAME | upper }}"
+
+  - name: convert into Upper Case
+    debug:
+      msg: "{{ NAME | lower }}"
+
+  - name: printing undefined variable
+    debug:
+      msg: "{{ COURSE | default("DevOps") }}"
