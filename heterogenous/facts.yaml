@@ -7,9 +7,9 @@
       msg: "All facts: {{ansible_facts}}"
     # just imagine we don't have any user id module available, only for practice 
   - name: add user for CentOS
-    ansible.builtin.command: useradd honey
+    ansible.builtin.command: useradd Harika
     when: ansible_facts['distribution'] == "CentOS"
 
   - name: add user Ubuntu
-    ansible.builtin.command: adduser honey
+    ansible.builtin.command: adduser Harika
     when: ansible_facts['distribution'] == "Ubuntu"
