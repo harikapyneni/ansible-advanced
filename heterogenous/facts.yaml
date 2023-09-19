@@ -5,12 +5,11 @@
   - name: print all the facts #prints all the variables in execution
     ansible.builtin.debug:
       msg: "All facts: {{ansible_facts}}"
-  
-  # just imagine we don't have any user id module available, only for practice 
+    # just imagine we don't have any user id module available, only for practice 
   - name: add user for CentOS
     ansible.builtin.command: useradd honey
     when: ansible_facts['distribution'] == "CentOS"
 
-  - name: add user Ubntu
+  - name: add user Ubuntu
     ansible.builtin.command: adduser honey
     when: ansible_facts['distribution'] == "Ubuntu"
