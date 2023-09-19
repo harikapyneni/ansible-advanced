@@ -8,9 +8,9 @@
   
   # just imagine we don't have any user id module available, only for practice 
   - name: add user for CentOS
-    ansible.builtin.command: user add honey
+    ansible.builtin.command: useradd honey
     when: ansible_facts['distribution'] == "CentOS"
 
   - name: add user Ubntu
-    ansible.builtin.command: add user honey
+    ansible.builtin.command: adduser honey
     when: ansible_facts['distribution'] == "Ubuntu"
